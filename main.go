@@ -2,12 +2,60 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"regexp"
+	"strings"
+	"time"
+
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/goburrow/modbus"
 	"github.com/spf13/viper"
-	"log"
-	"time"
 )
+
+// Digital input mode constants
+const (
+	NO = iota // Normally Open
+	NC = iota // Normally Closed
+)
+
+var addressMap = map[uint16]string{
+	100: "Digital input 2.1",
+	101: "Digital input 2.2",
+	102: "Digital input 2.3",
+	103: "Digital input 2.4",
+}
+
+// DigitalInput represents simple digital toggle
+type DigitalInput struct {
+	address     uint16
+	description string
+	previous    bool
+	current     bool
+	lastChange  time.Time
+	mode        int
+}
+
+// Update poll the modbus server for an updated value
+func (input *DigitalInput) Update(modbusClient modbus.Client, mqttClient mqtt.Client) error {
+	results, err := modbusClient.ReadDiscreteInputs(input.address, 1)
+	input.previous, input.current = input.current, results[0]&0x01 != 0
+	if input.current != input.previous {
+		input.lastChange = time.Now()
+		if (input.mode == NO && input.current && !input.previous) || (input.mode == NC && !input.current && input.previous) {
+			fmt.Printf("%s, %s: %v\n", input.Slug(), input.lastChange.Format(time.UnixDate), input.current)
+			mqttClient.Publish(input.Slug(), 0, false, "ON")
+		}
+	}
+	return err
+}
+
+// Slug representation for pushing out on MQTT
+func (input *DigitalInput) Slug() string {
+	slug := strings.ToLower(input.description)
+	slug = strings.Trim(slug, "_")
+	re := regexp.MustCompile("[^a-z0-9-_]")
+	return re.ReplaceAllString(slug, "_")
+}
 
 func readConfig() {
 	viper.AutomaticEnv()
@@ -29,28 +77,20 @@ func main() {
 		panic(token.Error())
 	}
 
-	// modbus polling
-	previous := false
-	current := false
-	state := "OFF"
-	client := modbus.TCPClient(viper.GetString("modbus_server_uri"))
-	for true {
-		results, err := client.ReadDiscreteInputs(100, 1)
-		if err != nil {
-			log.Fatal(err)
-		}
-		current = results[0] == 1
-		if current != previous {
-			if current == true {
-				if state == "OFF" {
-					state = "ON"
-				} else {
-					state = "OFF"
-				}
-				mqttClient.Publish("unipi/digital_input/21", 0, false, state)
+	// modbus client
+	modbusClient := modbus.TCPClient(viper.GetString("modbus_server_uri"))
+
+	// Initialize list of inputs
+	var inputs []DigitalInput
+	for address, description := range addressMap {
+		inputs = append(inputs, DigitalInput{address: address, description: description, previous: false, current: false, mode: NO})
+	}
+	for {
+		for k := range inputs {
+			err := inputs[k].Update(modbusClient, mqttClient)
+			if err != nil {
+				log.Fatal(err)
 			}
-			fmt.Printf("%s: %d\n", time.Now().Format(time.UnixDate), results[0])
-			previous = current
 		}
 	}
 }

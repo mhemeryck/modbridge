@@ -1,3 +1,3 @@
-# Unipusher
+# Modbridge
 
-A tool for pushing unipi neuron modbus TCP events to MQTT
+A tool for polling a modbus instance and pushing updates over MQTT.

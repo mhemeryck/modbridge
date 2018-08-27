@@ -4,7 +4,7 @@ ADD https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 /usr/
 RUN echo "287b08291e14f1fae8ba44374b26a2b12eb941af3497ed0ca649253e21ba2f83" /usr/bin/dep | sha256sum -c \
   && chmod 755 /usr/bin/dep
 
-WORKDIR $GOPATH/src/github.com/mhemeryck/unipusher
+WORKDIR $GOPATH/src/github.com/mhemeryck/modbridge
 COPY Gopkg.toml Gopkg.lock ./
 RUN dep ensure --vendor-only
 COPY . ./

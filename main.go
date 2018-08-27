@@ -101,7 +101,7 @@ func readConfig() {
 	viper.AutomaticEnv()
 	// defaults
 	viper.SetDefault("mqtt_broker_uri", "tcp://raspberrypi.lan:1883")
-	viper.SetDefault("mqtt_client_id", "unipusher")
+	viper.SetDefault("mqtt_client_id", "modbridge")
 	viper.SetDefault("modbus_server_uri", "unipi.lan:502")
 }
 

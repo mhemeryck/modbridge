@@ -78,6 +78,9 @@ func (input *DigitalInput) falling() bool {
 // Update poll the modbus server for an updated value
 func (input *DigitalInput) Update(modbusClient modbus.Client, mqttClient mqtt.Client) error {
 	results, err := modbusClient.ReadDiscreteInputs(input.address, 1)
+	if err != nil {
+		return err
+	}
 	input.previous, input.current = input.current, results[0]&0x01 != 0
 	if input.current != input.previous {
 		input.lastChange = time.Now()
@@ -112,7 +115,6 @@ func main() {
 	readConfig()
 
 	sem := make(chan empty, 2)
-
 	// MQTT client
 	opts := mqtt.NewClientOptions().AddBroker(viper.GetString("mqtt_broker_uri")).SetClientID(viper.GetString("mqtt_client_id"))
 	mqttClient := mqtt.NewClient(opts)

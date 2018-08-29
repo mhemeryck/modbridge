@@ -1,4 +1,15 @@
 version: "3"
 services:
+  modbridge_build:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+    image: modbridge:build
+    volumes:
+      - .:/go/src/github.com/mhemeryck/modbridge
   modbridge:
     build: .
+    volumes:
+      - .:/go/src/github.com/mhemeryck/modbridge
+    depends_on:
+      - modbridge_build

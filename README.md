@@ -1,5 +1,7 @@
 # Modbridge
 
+[![Build Status](https://travis-ci.com/mhemeryck/modbridge.svg?branch=master)](https://travis-ci.com/mhemeryck/modbridge)
+
 A tool for polling a modbus instance and pushing updates over MQTT.
 
 ## Quickstart

@@ -19,3 +19,11 @@ install:
 
 script:
   - docker run modbridge:build go test -v ./...
+
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux

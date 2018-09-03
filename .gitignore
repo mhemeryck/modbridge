@@ -1,3 +1,4 @@
 tags
 *.sw[o|p]
 vendor/
+dist/

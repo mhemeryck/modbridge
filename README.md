@@ -6,29 +6,16 @@ A tool for polling a modbus instance and pushing updates over MQTT.
 
 ## Quickstart
 
-The recommend way is to build everything using [docker] and [docker-compose].
+Setup uses plain [golang build] for building the binaries.
+Pre-built binaries are availble on the [releases] page.
+Docker images shall be made available on [docker hub].
 
-Building:
-
-    docker-compose build
-
-Running the application:
-
-    docker-compose up modbridge
-
-Note that the current setup still has all settings hard-coded, see the `main.go` file for the settings to change.
-
-### Docker
-
-The current docker setup uses a [multi-stage build], where the first stage build all the artifacts and still has all the test dependencies available, where as the second stage only contains the raw binary to execute (low footprint image).
-
-## Testing
-
-Testing is limited at the moment, but can be executed within the docker container:
-
-    docker-compose run --rm modbridge_build go test -v ./...
+Custom configuration can be added by changing the `config.yml` file.
+The current example configuration is for a [unipi neuron L303].
+Currently only polling the coil values is implemented.
 
 
-[docker]: https://docs.docker.com/get-started/
-[docker-compose]: https://docs.docker.com/compose/gettingstarted/#prerequisites
-[multi-stage build]: https://docs.docker.com/develop/develop-images/multistage-build/
+[golang build]: https://golang.org/pkg/go/build/
+[releases]: https://github.com/mhemeryck/modbridge/releases/
+[docker hub]: https://hub.docker.com/r/mhemeryck/modbridge/
+[unipi neuron L303]: https://www.unipi.technology/unipi-neuron-l303-p23/

@@ -1,10 +1,21 @@
 language: go
 
 env:
-  - DEP_VERSION=0.5.0
+- DEP_VERSION=0.5.0
 
 before_install:
-  - curl https://raw.githubusercontent.com/golang/dep/v${DEP_VERSION}/install.sh | sh
+- curl https://raw.githubusercontent.com/golang/dep/v${DEP_VERSION}/install.sh | sh
 
 install:
-  - dep ensure --vendor-only
+- dep ensure --vendor-only
+
+after_success:
+- test -n "$TRAVIS_TAG" && docker login -u=mhemeryck -p="$DOCKER_PASSWORD"
+
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux

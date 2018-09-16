@@ -7,6 +7,7 @@ type ModbusMode string
 const (
 	Read      ModbusMode = "R"  // Read-only
 	ReadWrite            = "RW" // Both read and write allowed
+	Write                = "W"  // Write-only. Added for own purposes
 )
 
 // RegisterDataType indicates how to read the contents of the register

@@ -76,7 +76,9 @@ func main() {
 
 	sem := make(chan empty, 2)
 	// MQTT client
-	opts := mqtt.NewClientOptions().AddBroker(config.MQTTBrokerURI).SetClientID(config.MQTTClientID)
+	opts := mqtt.NewClientOptions()
+	opts.AddBroker(config.MQTTBrokerURI)
+	opts.SetClientID(config.MQTTClientID)
 	mqttClient := mqtt.NewClient(opts)
 	go func() {
 		for {
@@ -113,13 +115,36 @@ func main() {
 
 	// Initialize list of inputs
 	var inputs []DigitalInput
+	inputMap := make(map[string]DigitalInput)
 	for _, coil := range config.Coils {
-		inputs = append(inputs, DigitalInput{address: coil.Address, slug: coil.Slug, previous: false, current: false, mode: NO})
+		input := DigitalInput{address: coil.Address, slug: coil.Slug, previous: false, current: false, mode: NO}
+		// Skip in case we only use it to write back
+		if coil.Mode != "W" {
+			inputs = append(inputs, input)
+		}
+		inputMap[coil.Slug] = input
+	}
+
+	// Subcribe for each topic: create a callback for all of them
+	var messageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+		if input, ok := inputMap[msg.Topic()]; ok {
+			var value uint16
+			if string(msg.Payload()) == "ON" {
+				value = 0xFF00
+			} else {
+				value = 0x0000
+			}
+			_, err := modbusClient.WriteSingleCoil(input.address, value)
+			if err != nil {
+				fmt.Printf("Error %d writing on MQTT event", err)
+			}
+		}
 	}
 
 	// Infinite loop
 	sem = make(chan empty, 8)
 	for {
+		// Async polling modbus to MQTT
 		for k := range inputs {
 			go func(k int) {
 				err := inputs[k].Update(modbusClient, mqttClient)
@@ -128,6 +153,12 @@ func main() {
 				}
 				sem <- empty{}
 			}(k)
+		}
+		// Sync polling MQTT to modbus
+		for slug := range inputMap {
+			if token := mqttClient.Subscribe(slug, 0, messageHandler); token.Wait() && token.Error() != nil {
+				log.Fatal(err)
+			}
 		}
 		for i := 0; i < cap(sem); i++ {
 			<-sem

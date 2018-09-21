@@ -1,14 +1,14 @@
 builds:
 -
   env:
-    - CGO_ENABLED=0
+  - CGO_ENABLED=0
   goos:
-    - linux
+  - linux
   goarch:
-    - amd64
-    - arm
+  - amd64
+  - arm
   goarm:
-    - 7
+  - 7
 archive:
   replacements:
     linux: Linux
@@ -16,9 +16,19 @@ archive:
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  name_template: "{{ .Commit }}"
+sign:
+  artifacts: checksum
 dockers:
   -
     image: mhemeryck/modbridge
+    goarch: amd64
+    goos: linux
+    tag_templates:
+    - "{{ .Tag }}"
+    - "{{ .Arch }}-{{ .Tag }}"
+    - "{{ .Arch }}-latest"
+    - "{{ .Arch }}"
+    - latest
     extra_files:
     - config.yml

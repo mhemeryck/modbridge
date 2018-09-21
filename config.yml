@@ -1,4 +1,3 @@
-registers:
 coils:
 - address: 0
   mode: "W"
@@ -84,18 +83,6 @@ coils:
 - address: 1027
   mode: "RW"
   slug: "enable-ds-toggle-on-di-1-4"
-- address: 100
-  mode: "RW"
-  slug: "digital-input-2-1"
-- address: 101
-  mode: "RW"
-  slug: "digital-input-2-2"
-- address: 102
-  mode: "RW"
-  slug: "digital-input-2-3"
-- address: 103
-  mode: "RW"
-  slug: "digital-input-2-4"
 - address: 100
   mode: "RW"
   slug: "digital-input-2-1"

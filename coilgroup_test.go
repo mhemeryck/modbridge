@@ -52,7 +52,7 @@ func TestCoilGroupUpdate(t *testing.T) {
 
 func TestGroupCoils(t *testing.T) {
 	// Example flat input array of coils
-	input := []Coil{Coil{Address: 0}, Coil{Address: 1}, Coil{Address: 10}}
+	input := []Coil{Coil{Address: 0}, Coil{Address: 10}, Coil{Address: 1}}
 	// Expected results of grouping them
 	expected := []CoilGroup{
 		CoilGroup{

@@ -1,6 +1,7 @@
 package modbridge
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -15,9 +16,11 @@ func TestCoilGroupUpdate(t *testing.T) {
 		current  bool
 		results  []byte
 		expected bool
+		err      error
 	}{
-		{previous: false, current: false, results: []byte{1}, expected: true},
-		{previous: false, current: true, results: []byte{0}, expected: false},
+		{previous: false, current: false, results: []byte{1}, expected: true, err: nil},
+		{previous: false, current: true, results: []byte{0}, expected: false, err: nil},
+		{err: errors.New("bzzt")},
 	}
 	offset := uint16(10)
 	Address := uint16(11)
@@ -31,13 +34,18 @@ func TestCoilGroupUpdate(t *testing.T) {
 		// Create a coil group
 		coilGroup := &CoilGroup{offset: offset, coils: coils, ModbusClient: ModbusClient, MQTTClient: MQTTClient}
 		// Prepare test condition
-		ModbusClient.On("ReadCoils", coilGroup.offset, uint16(len(coils))).Return(testCase.results, nil)
+		ModbusClient.On("ReadCoils", coilGroup.offset, uint16(len(coils))).Return(testCase.results, testCase.err)
 		MQTTClient.On("Publish", mock.AnythingOfType("string"), byte(0), false, "trigger").Return(&mqtt.PublishToken{})
 		// Actual call
-		coilGroup.Update()
-		// Test case
-		if coilGroup.coils[0].current != testCase.expected {
-			t.Errorf("Expected current %v but got %v\n", testCase.expected, coilGroup.coils[0].current)
+		resultErr := coilGroup.Update()
+		if resultErr != testCase.err {
+			t.Errorf("Expected error %v but got %v\n", testCase.err, resultErr)
+		}
+		// Test case, only if no errors occured
+		if testCase.err != nil {
+			if coilGroup.coils[0].current != testCase.expected {
+				t.Errorf("Expected current %v but got %v\n", testCase.expected, coilGroup.coils[0].current)
+			}
 		}
 	}
 }

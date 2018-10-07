@@ -1,6 +1,7 @@
 # Modbridge
 
 [![Build Status](https://travis-ci.com/mhemeryck/modbridge.svg?branch=master)](https://travis-ci.com/mhemeryck/modbridge)
+[![Coverage Status](https://coveralls.io/repos/github/mhemeryck/modbridge/badge.svg?branch=master)](https://coveralls.io/github/mhemeryck/modbridge?branch=master)
 
 A tool for polling a modbus instance and pushing updates over MQTT.
 

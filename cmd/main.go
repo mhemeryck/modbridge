@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -13,11 +14,35 @@ import (
 
 type empty struct{}
 
+// Current program version info, injected at build time
+var version, commit, date string
+
+// printVersionInfo prints the current version info, where the values are injected at build time with goreleaser
+func printVersionInfo() {
+	fmt.Print("Modbridge\n")
+	var info = map[string]string{
+		"Version": version,
+		"Commit":  commit,
+		"Date":    date,
+	}
+	for key, value := range info {
+		fmt.Printf("%s: %s\n", key, value)
+	}
+}
+
 func main() {
 	// Read configuration
+	var showVersion bool
+	flag.BoolVar(&showVersion, "version", false, "Print version info and exit")
 	var configFile string
 	flag.StringVar(&configFile, "filename", "config.yml", "Config file name")
 	flag.Parse()
+
+	// Show version and exit
+	if showVersion {
+		printVersionInfo()
+		return
+	}
 
 	rawConfig, err := ioutil.ReadFile(configFile)
 	if err != nil {

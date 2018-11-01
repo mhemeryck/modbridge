@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/goburrow/modbus"
@@ -36,6 +37,8 @@ func main() {
 	flag.BoolVar(&showVersion, "version", false, "Print version info and exit")
 	var configFile string
 	flag.StringVar(&configFile, "filename", "config.yml", "Config file name")
+	var pollingInterval int
+	flag.IntVar(&pollingInterval, "polling_interval", 20, "Polling interval for one coil group in millis")
 	flag.Parse()
 
 	// Show version and exit
@@ -97,20 +100,17 @@ func main() {
 		coilGroups[k].MQTTClient = mqttClient
 	}
 
+	ticker := time.NewTicker(time.Millisecond * time.Duration(pollingInterval)).C
 	// Continuous infinite polling
-	sem := make(chan empty, len(coilGroups))
+	k := 0
 	for {
-		for k := range coilGroups {
-			go func(k int) {
-				err := coilGroups[k].Update()
-				if err != nil {
-					log.Fatal(err)
-				}
-				sem <- empty{}
-			}(k)
-		}
-		for i := 0; i < cap(sem); i++ {
-			<-sem
+		select {
+		case <-ticker:
+			err := coilGroups[k].Update()
+			if err != nil {
+				log.Fatal(err)
+			}
+			k = (k + 1) % len(coilGroups)
 		}
 	}
 }

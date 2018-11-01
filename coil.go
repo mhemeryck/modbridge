@@ -1,6 +1,9 @@
 package modbridge
 
 import (
+	"log"
+	"time"
+
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
@@ -42,6 +45,7 @@ func (coil *Coil) Update(value bool, mqttClient mqtt.Client) {
 	coil.previous, coil.current = coil.current, value
 	if coil.current != coil.previous {
 		if (coil.switchType == NO && coil.rising()) || (coil.switchType == NC && coil.falling()) {
+			log.Printf("%s  -  trigger for %s", time.Now().Format(time.RFC3339), coil.Slug)
 			mqttClient.Publish(coil.Slug, 0, false, "trigger")
 		}
 	}

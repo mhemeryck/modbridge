@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -31,6 +33,32 @@ func printVersionInfo() {
 	}
 }
 
+// NewTLSConfig generates a TLS config instance for use with the MQTT setup
+func NewTLSConfig(caFile string, insecure bool) *tls.Config {
+	// Read the ceritifcates from the system, continue with empty pool in case of failure
+	rootCAs, _ := x509.SystemCertPool()
+	if rootCAs == nil {
+		rootCAs = x509.NewCertPool()
+	}
+
+	// Read the local file from the supplied path
+	certs, err := ioutil.ReadFile(caFile)
+	if err != nil {
+		log.Fatalf("Failed to append %q to RootCAs: %v", caFile, err)
+	}
+
+	// Append our cert to the system pool
+	if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
+		log.Println("No certs appended, using system certs only")
+	}
+
+	// Trust the augmented cert pool in our client
+	return &tls.Config{
+		InsecureSkipVerify: insecure,
+		RootCAs:            rootCAs,
+	}
+}
+
 func main() {
 	// Read configuration
 	var showVersion bool
@@ -39,6 +67,10 @@ func main() {
 	flag.StringVar(&configFile, "filename", "config.yml", "Config file name")
 	var pollingInterval int
 	flag.IntVar(&pollingInterval, "polling_interval", 20, "Polling interval for one coil group in millis")
+	var caFile string
+	flag.StringVar(&caFile, "cafile", "", "CA certificate used for MQTT TLS setup")
+	var insecure bool
+	flag.BoolVar(&insecure, "insecure", false, "Flag to control MQTT host TLS host name check")
 	flag.Parse()
 
 	// Show version and exit
@@ -80,6 +112,10 @@ func main() {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(config.MQTTBrokerURI)
 	opts.SetClientID(config.MQTTClientID)
+	if caFile != "" {
+		tlsConfig := NewTLSConfig(caFile, insecure)
+		opts.SetTLSConfig(tlsConfig)
+	}
 	opts.OnConnect = func(c mqtt.Client) {
 		for slug := range coilMap {
 			if token := c.Subscribe(slug, 0, messageHandler); token.Wait() && token.Error() != nil {

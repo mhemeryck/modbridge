@@ -281,6 +281,6 @@ coils:
 - address: 1203
   mode: "RW"
   slug: "save-current-configuration-as-default-to-nv-ram-of-group-3"
-mqtt_broker_uri: "tcp://raspberrypi.lan:1883"
+mqtt_broker_uri: "ssl://raspberrypi.lan:8883"
 mqtt_client_id: "modbridge"
 modbus_server_uri: "unipi.lan:502"

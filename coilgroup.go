@@ -27,8 +27,8 @@ func (coilGroup *CoilGroup) Update() (err error) {
 		return
 	}
 	for k := range coilGroup.coils {
-		numberIndex := k / 16
-		bitOffset := uint16(k % 16)
+		numberIndex := k / 8
+		bitOffset := uint16(k % 8)
 		value := results[numberIndex] & (1 << bitOffset)
 		coilGroup.coils[k].Update(value != 0, coilGroup.MQTTClient)
 	}

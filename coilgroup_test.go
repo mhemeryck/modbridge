@@ -50,6 +50,40 @@ func TestCoilGroupUpdate(t *testing.T) {
 	}
 }
 
+func TestCoilGroupUpdateIndex(t *testing.T) {
+	previous := false
+	current := false
+	results := []byte{0, 1}
+	expected := true
+	var err error = nil
+
+	offset := uint16(10)
+	Address := uint16(19)
+	Slug := "test"
+	switchType := NO
+
+	// Array of length 9; last index is the test value
+	coils := make([]Coil, 9)
+	coils[8] = Coil{Address: Address, Slug: Slug, previous: previous, current: current, switchType: switchType}
+
+	ModbusClient := &mocks.ModbusClient{}
+	MQTTClient := &mocks.MQTTClient{}
+	// Create a coil group
+	coilGroup := &CoilGroup{offset: offset, coils: coils, ModbusClient: ModbusClient, MQTTClient: MQTTClient}
+	// Prepare test condition
+	ModbusClient.On("ReadCoils", coilGroup.offset, uint16(len(coils))).Return(results, err)
+	MQTTClient.On("Publish", mock.AnythingOfType("string"), byte(0), false, "trigger").Return(&mqtt.PublishToken{})
+	// Actual call
+	resultErr := coilGroup.Update()
+	if resultErr != nil {
+		t.Errorf("Expected error %v but got %v\n", err, resultErr)
+	}
+	// test the 9th index
+	if coilGroup.coils[8].current != expected {
+		t.Errorf("Expected current %v but got %v\n", expected, coilGroup.coils[8].current)
+	}
+}
+
 func TestGroupCoils(t *testing.T) {
 	// Example flat input array of coils
 	input := []Coil{Coil{Address: 0}, Coil{Address: 10}, Coil{Address: 1}}

@@ -55,7 +55,7 @@ func TestCoilGroupUpdateIndex(t *testing.T) {
 	current := false
 	results := []byte{0, 1}
 	expected := true
-	var err error = nil
+	var err error
 
 	offset := uint16(10)
 	Address := uint16(19)

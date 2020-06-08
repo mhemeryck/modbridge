@@ -1,33 +1,30 @@
 builds:
--
-  main: ./cmd/main.go
-  env:
-  - CGO_ENABLED=0
-  goos:
-  - linux
-  goarch:
-  - amd64
-  - arm
-  goarm:
-  - 7
-archive:
-  replacements:
-    linux: Linux
-    amd64: x86_64
+  - main: ./cmd/main.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm
+    goarm:
+      - 7
+archives:
+  - replacements:
+      linux: Linux
+      amd64: x86_64
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
   name_template: "{{ .Commit }}"
 dockers:
-  -
-    image: mhemeryck/modbridge
+  - image_templates:
+      - "mhemeryck/modbridge:latest"
+      - "mhemeryck/modbridge:{{ .Tag }}"
+      - "mhemeryck/modbridge:{{ .Arch }}-{{ .Tag }}"
+      - "mhemeryck/modbridge:{{ .Arch }}-latest"
+      - "mhemeryck/modbridge:{{ .Arch }}"
     goarch: amd64
     goos: linux
-    tag_templates:
-    - "{{ .Tag }}"
-    - "{{ .Arch }}-{{ .Tag }}"
-    - "{{ .Arch }}-latest"
-    - "{{ .Arch }}"
-    - latest
     extra_files:
-    - config.yml
+      - config.yml

@@ -21,9 +21,6 @@ dockers:
   - image_templates:
       - "mhemeryck/modbridge:latest"
       - "mhemeryck/modbridge:{{ .Tag }}"
-      - "mhemeryck/modbridge:{{ .Arch }}-{{ .Tag }}"
-      - "mhemeryck/modbridge:{{ .Arch }}-latest"
-      - "mhemeryck/modbridge:{{ .Arch }}"
     goarch: amd64
     goos: linux
     extra_files:

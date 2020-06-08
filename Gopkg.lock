@@ -10,15 +10,15 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:184008c955d6a3226b700c13ed0e875a7a051a759618f9bccba9b5c99f17faa5"
+  digest = "1:bb89a2542933056fcebc2950bb15ec636e623cc43c96597288aa2009f15b0ce1"
   name = "github.com/eclipse/paho.mqtt.golang"
   packages = [
     ".",
     "packets",
   ]
   pruneopts = "UT"
-  revision = "36d01c2b4cbeb3d2a12063e4880ce30800af9560"
-  version = "v1.1.1"
+  revision = "adca289fdcf8c883800aafa545bc263452290bae"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:aa43a01d4dd8f0e4f6fe5093bf8942bae94a67b654c1aa06e44e73ac802ce7e7"
@@ -29,12 +29,12 @@
   version = "v0.1.0"
 
 [[projects]]
-  branch = "master"
   digest = "1:55b9bfea531b22ab4cb06aafad9e3faa15ee92b3f9c46625cf9ca445b3ccac7f"
   name = "github.com/goburrow/serial"
   packages = ["."]
   pruneopts = "UT"
   revision = "5efbe925ecf714f8ba147bf2226f2e7afc7111bc"
+  version = "v0.1.0"
 
 [[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
@@ -45,27 +45,27 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:ac83cf90d08b63ad5f7e020ef480d319ae890c208f8524622a2f3136e2686b02"
+  digest = "1:23472f69a3ee7225de2f104aa48c6456959d1c155e45035c9845806d83109190"
   name = "github.com/stretchr/objx"
   packages = ["."]
   pruneopts = "UT"
-  revision = "477a77ecc69700c7cdeb1fa9e129548e1c1c393c"
-  version = "v0.1.1"
+  revision = "ea4fe68685ee0d3cee7032121851b57e7494e8ea"
+  version = "v0.2.0"
 
 [[projects]]
-  digest = "1:15a4a7e5afac3cea801fa24831fce3bf3b5bd3620cbf8355a07b7dbf06877883"
+  digest = "1:e1dec70f3d761a66432fa0c7f2b38a63cbe9d91761a50102def809ecf133cec4"
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
     "mock",
   ]
   pruneopts = "UT"
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
+  revision = "f654a9112bbeac49ca2cd45bfbe11533c4666cf8"
+  version = "v1.6.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:ece338c951f4410f9ea21b56ea12f933ffb085672fe868ab57254d1536f384f7"
+  digest = "1:323d0eeaa3893e9f9cf6c11b11e3c5ce949b32d672b037e663b0e98de6f2d004"
   name = "golang.org/x/net"
   packages = [
     "internal/socks",
@@ -73,15 +73,23 @@
     "websocket",
   ]
   pruneopts = "UT"
-  revision = "922f4815f713f213882e8ef45e0d315b164d705c"
+  revision = "627f9648deb96c27737b83199d44bb5c1010cbcf"
 
 [[projects]]
-  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
+  digest = "1:d7f1bd887dc650737a421b872ca883059580e9f8314d601f88025df4f4802dce"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
-  version = "v2.2.1"
+  revision = "0b1645d91e851e735d3e23330303ce81f70adbe3"
+  version = "v2.3.0"
+
+[[projects]]
+  branch = "v3"
+  digest = "1:8639671727a344ac01338e004e63774356483aba4a7ad2881f5a8f0ff4affe29"
+  name = "gopkg.in/yaml.v3"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a5ece683394c3b88d90572e44d36c93aea492c2c"
 
 [solve-meta]
   analyzer-name = "dep"

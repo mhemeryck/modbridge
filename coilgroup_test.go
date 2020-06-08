@@ -28,7 +28,7 @@ func TestCoilGroupUpdate(t *testing.T) {
 	switchType := NO
 	for _, testCase := range cases {
 		// Variables
-		coils := []Coil{Coil{Address: Address, Slug: Slug, previous: testCase.previous, current: testCase.current, switchType: switchType}}
+		coils := []Coil{{Address: Address, Slug: Slug, previous: testCase.previous, current: testCase.current, switchType: switchType}}
 		ModbusClient := &mocks.ModbusClient{}
 		MQTTClient := &mocks.MQTTClient{}
 		// Create a coil group
@@ -86,19 +86,19 @@ func TestCoilGroupUpdateIndex(t *testing.T) {
 
 func TestGroupCoils(t *testing.T) {
 	// Example flat input array of coils
-	input := []Coil{Coil{Address: 0}, Coil{Address: 10}, Coil{Address: 1}}
+	input := []Coil{{Address: 0}, {Address: 10}, {Address: 1}}
 	// Expected results of grouping them
 	expected := []CoilGroup{
-		CoilGroup{
+		{
 			offset: 0,
 			coils: []Coil{
-				Coil{Address: 0}, Coil{Address: 1},
+				{Address: 0}, {Address: 1},
 			},
 		},
-		CoilGroup{
+		{
 			offset: 10,
 			coils: []Coil{
-				Coil{Address: 10},
+				{Address: 10},
 			},
 		},
 	}

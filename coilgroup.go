@@ -49,7 +49,7 @@ func GroupCoils(coils []Coil) []CoilGroup {
 
 	// Single-length case
 	if len(coils) == 1 {
-		return []CoilGroup{CoilGroup{offset: coils[0].Address, coils: coils}}
+		return []CoilGroup{{offset: coils[0].Address, coils: coils}}
 	}
 
 	// Start with the first group by considering it the 1-length case

@@ -41,7 +41,7 @@ modbus_server_uri: "modbus:502"`)
 func TestCoilsListConfiguration(t *testing.T) {
 	c := Configuration{
 		Coils: []CoilConfig{
-			CoilConfig{Address: 1, Mode: Read}, CoilConfig{Address: 2, Mode: ReadWrite}, CoilConfig{Address: 3, Mode: Write},
+			{Address: 1, Mode: Read}, {Address: 2, Mode: ReadWrite}, {Address: 3, Mode: Write},
 		},
 	}
 	coils := c.CoilsList()
@@ -53,7 +53,7 @@ func TestCoilsListConfiguration(t *testing.T) {
 func TestCoilsMapConfiguration(t *testing.T) {
 	c := Configuration{
 		Coils: []CoilConfig{
-			CoilConfig{Slug: "a", Mode: Read}, CoilConfig{Slug: "b", Mode: ReadWrite}, CoilConfig{Slug: "c", Mode: Write},
+			{Slug: "a", Mode: Read}, {Slug: "b", Mode: ReadWrite}, {Slug: "c", Mode: Write},
 		},
 	}
 	coils := c.CoilsMap()
@@ -71,12 +71,12 @@ func TestCoilsMapConfiguration(t *testing.T) {
 func TestCoilGroupsListConfiguration(t *testing.T) {
 	c := Configuration{
 		Coils: []CoilConfig{
-			CoilConfig{Address: 1, Mode: Read}, CoilConfig{Address: 10, Mode: ReadWrite}, CoilConfig{Address: 20, Mode: Write},
+			{Address: 1, Mode: Read}, {Address: 10, Mode: ReadWrite}, {Address: 20, Mode: Write},
 		},
 	}
 	expected := []CoilGroup{
-		CoilGroup{offset: 1, coils: []Coil{Coil{Address: 1}}},
-		CoilGroup{offset: 10, coils: []Coil{Coil{Address: 10}}},
+		{offset: 1, coils: []Coil{{Address: 1}}},
+		{offset: 10, coils: []Coil{{Address: 10}}},
 	}
 	actual := c.CoilGroupsList()
 	if !reflect.DeepEqual(actual, expected) {

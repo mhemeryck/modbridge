@@ -41,7 +41,7 @@ func TestCoilGroupUpdate(t *testing.T) {
 		if resultErr != testCase.err {
 			t.Errorf("Expected error %v but got %v\n", testCase.err, resultErr)
 		}
-		// Test case, only if no errors occured
+		// Test case, only if no errors occurred
 		if testCase.err != nil {
 			if coilGroup.coils[0].current != testCase.expected {
 				t.Errorf("Expected current %v but got %v\n", testCase.expected, coilGroup.coils[0].current)
